@@ -85,4 +85,3 @@ Unit tests cover parsing, queue order, hold timing, duplicate commands, full que
 oversized input, and disconnect release. Loopback integration tests cover bind,
 connect, acknowledgements, command delivery, single-client enforcement, and clean
 reconnection. A small Python standard-library client provides the manual smoke test.
-

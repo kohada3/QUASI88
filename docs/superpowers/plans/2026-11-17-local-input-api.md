@@ -304,4 +304,3 @@ Expected: no whitespace errors and no unintended files.
 - [ ] **Step 5: Commit any verification-only correction**
 
 If no correction was needed, do not create an empty commit. Otherwise commit only the verified correction with a message describing the defect fixed.
-
