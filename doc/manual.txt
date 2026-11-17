@@ -2161,12 +2161,23 @@ localhost キー入力 API
 	-input-api <port> を指定すると、IPv4 の 127.0.0.1 だけで NDJSON の
 	キー入力 API を有効にします。既定では無効です。ポートは 1〜65535 を
 	指定します。接続できるクライアントは同時に1つだけです。
+	各要求と応答は1行のJSONです。例:
+
+	{"id":1,"op":"ping"}
+	{"id":2,"op":"tap","key":"KEY88_RETURN","hold_ms":120}
+	{"id":2,"ok":true,"status":"queued"}
 
 	対応操作は ping、tap、keydown、keyup です。入力行は最大1024バイト、
 	待機キューは最大256件です。キー名には KEY88_1、KEY88_A、
 	KEY88_RETURN、KEY88_SHIFT など QUASI88 のキー名を指定します。
 	クライアント終了前に keydown したキーを keyup してください。切断時にも
 	APIが保持しているキーは解放されます。
+	付属クライアントは次のように使用します。
+
+	python tools/quasi88-input.py --port 18801 ping
+	python tools/quasi88-input.py --port 18801 tap KEY88_1
+	python tools/quasi88-input.py --port 18801 keydown KEY88_SHIFT
+	python tools/quasi88-input.py --port 18801 keyup KEY88_SHIFT
 
 	現時点でエミュレートされていない部分を以下に挙げます。
 
