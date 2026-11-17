@@ -35,6 +35,7 @@ int input_api_init(
     input_api_key_resolver_t resolver,
     input_api_key_sink_t sink, void *opaque);
 void input_api_poll(input_api_t *api, uint64_t now_ms);
+void input_api_release_all(input_api_t *api);
 void input_api_shutdown(input_api_t *api);
 uint16_t input_api_bound_port(const input_api_t *api);
 

@@ -68,6 +68,7 @@ void input_api_core_tick(
     input_api_key_sink_t sink, void *opaque)
 {
     size_t index;
+    size_t remaining;
 
     if (core == NULL || sink == NULL) return;
     for (index = 0; index < INPUT_API_KEY_COUNT; index++) {
@@ -76,25 +77,30 @@ void input_api_core_tick(
             emit_up(core, index, sink, opaque);
         }
     }
-    while (core->count != 0) {
+    remaining = core->count;
+    while (remaining-- != 0 && core->count != 0) {
         input_api_action_t action = core->queue[core->head];
         uint64_t due;
 
         core->head = (core->head + 1) % INPUT_API_QUEUE_CAPACITY;
         core->count--;
         index = key_index(action.key88);
+        if (action.type == INPUT_API_ACTION_TAP && is_held(core, index)) {
+            size_t tail = (core->head + core->count) % INPUT_API_QUEUE_CAPACITY;
+            core->queue[tail] = action;
+            core->count++;
+            continue;
+        }
         if (action.type == INPUT_API_ACTION_DOWN) {
             emit_down(core, index, sink, opaque);
             core->release_at[index] = 0;
         } else if (action.type == INPUT_API_ACTION_UP) {
             emit_up(core, index, sink, opaque);
-        } else if (!is_held(core, index) || core->release_at[index] != 0) {
+        } else {
             emit_down(core, index, sink, opaque);
             due = UINT64_MAX - now_ms < action.hold_ms
                 ? UINT64_MAX : now_ms + action.hold_ms;
-            if (core->release_at[index] == 0 || due > core->release_at[index]) {
-                core->release_at[index] = due;
-            }
+            core->release_at[index] = due;
         }
     }
 }

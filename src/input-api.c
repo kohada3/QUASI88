@@ -271,6 +271,12 @@ void input_api_shutdown(input_api_t *api)
 #endif
 }
 
+void input_api_release_all(input_api_t *api)
+{
+    if (api == NULL) return;
+    input_api_core_release_all(&api->core, api->sink, api->opaque);
+}
+
 uint16_t input_api_bound_port(const input_api_t *api)
 {
     return api->bound_port;

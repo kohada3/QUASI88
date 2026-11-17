@@ -75,6 +75,13 @@ static void input_api_key_sink(int key88, int pressed, void *opaque)
 	quasi88_key(key88, pressed);
 }
 
+void quasi88_input_api_release_all(void)
+{
+	if (input_api_active) {
+		input_api_release_all(&input_api);
+	}
+}
+
 #define VERBOSE_PROC_PRINTF(str)	if (verbose_proc) printf(str); fflush(NULL)
 #define ERROR_PRINTF(str)			fprintf(stderr, str)
 

@@ -76,6 +76,32 @@ static void test_shutdown_releases_and_discards(void)
     CHECK(recorder.count == 4);
 }
 
+static void test_emulator_reset_releases_and_keeps_listener(void)
+{
+    input_api_t api;
+    recorder_t recorder = { 0 };
+    input_api_action_t action;
+
+    CHECK(input_api_init(&api, 0, resolve_key, record_key, &recorder));
+    action.type = INPUT_API_ACTION_DOWN;
+    action.key88 = 40;
+    action.hold_ms = 0;
+    CHECK(input_api_core_submit(&api.core, &action));
+    input_api_core_tick(&api.core, 10, record_key, &recorder);
+    action.type = INPUT_API_ACTION_TAP;
+    action.key88 = 41;
+    action.hold_ms = 80;
+    CHECK(input_api_core_submit(&api.core, &action));
+
+    input_api_release_all(&api);
+
+    CHECK(recorder.count == 2);
+    CHECK(recorder.events[1].key88 == 40 && recorder.events[1].pressed == 0);
+    CHECK(input_api_core_pending(&api.core) == 0);
+    CHECK(input_api_bound_port(&api) != 0);
+    input_api_shutdown(&api);
+}
+
 int main(void)
 {
 #ifdef _WIN32
@@ -85,6 +111,7 @@ int main(void)
     test_disabled_default();
     test_occupied_port_fails();
     test_shutdown_releases_and_discards();
+    test_emulator_reset_releases_and_keeps_listener();
 #ifdef _WIN32
     WSACleanup();
 #endif

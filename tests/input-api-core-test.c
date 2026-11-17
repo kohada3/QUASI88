@@ -117,6 +117,35 @@ static void test_tap_boundaries(void)
     CHECK(recorder.events[3].key88 == 61 && recorder.events[3].pressed == 0);
 }
 
+static void test_repeated_taps_of_same_key_stay_distinct(void)
+{
+    input_api_core_t core;
+    recorder_t recorder = { 0 };
+
+    input_api_core_init(&core);
+    submit(&core, action(INPUT_API_ACTION_TAP, 50, 80));
+    submit(&core, action(INPUT_API_ACTION_TAP, 50, 80));
+    submit(&core, action(INPUT_API_ACTION_DOWN, 51, 0));
+
+    input_api_core_tick(&core, 100, record_key, &recorder);
+    CHECK(recorder.count == 2);
+    CHECK(recorder.events[0].key88 == 50 && recorder.events[0].pressed == 1);
+    CHECK(recorder.events[1].key88 == 51 && recorder.events[1].pressed == 1);
+    CHECK(input_api_core_pending(&core) == 1);
+
+    input_api_core_tick(&core, 179, record_key, &recorder);
+    CHECK(recorder.count == 2);
+    input_api_core_tick(&core, 180, record_key, &recorder);
+    CHECK(recorder.count == 4);
+    CHECK(recorder.events[2].key88 == 50 && recorder.events[2].pressed == 0);
+    CHECK(recorder.events[3].key88 == 50 && recorder.events[3].pressed == 1);
+    CHECK(input_api_core_pending(&core) == 0);
+
+    input_api_core_tick(&core, 260, record_key, &recorder);
+    CHECK(recorder.count == 5);
+    CHECK(recorder.events[4].key88 == 50 && recorder.events[4].pressed == 0);
+}
+
 static void test_idempotent_transitions(void)
 {
     input_api_core_t core;
@@ -160,6 +189,7 @@ int main(void)
     test_queue_full_is_unchanged();
     test_default_tap_timing_and_unrelated_progress();
     test_tap_boundaries();
+    test_repeated_taps_of_same_key_stay_distinct();
     test_idempotent_transitions();
     test_release_all_once_and_discard_queue();
     if (failures) {

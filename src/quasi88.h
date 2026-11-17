@@ -127,6 +127,7 @@ void quasi88(void);
 void quasi88_start(void);
 void quasi88_main(void);
 void quasi88_stop(void);
+void quasi88_input_api_release_all(void);
 enum {
 	QUASI88_LOOP_EXIT,
 	QUASI88_LOOP_ONE,
