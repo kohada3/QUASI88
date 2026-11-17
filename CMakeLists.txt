@@ -337,4 +337,16 @@ if(BUILD_TESTING)
     )
     target_include_directories(input_api_core_tests PRIVATE src)
     add_test(NAME input_api_core_tests COMMAND input_api_core_tests)
+
+    add_executable(input_api_server_tests
+        src/input-api-protocol.c
+        src/input-api-core.c
+        src/input-api.c
+        tests/input-api-server-test.c
+    )
+    target_include_directories(input_api_server_tests PRIVATE src)
+    if(WIN32)
+        target_link_libraries(input_api_server_tests PRIVATE ws2_32)
+    endif()
+    add_test(NAME input_api_server_tests COMMAND input_api_server_tests)
 endif()
