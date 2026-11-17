@@ -330,4 +330,11 @@ if(BUILD_TESTING)
     )
     target_include_directories(input_api_protocol_tests PRIVATE src)
     add_test(NAME input_api_protocol_tests COMMAND input_api_protocol_tests)
+
+    add_executable(input_api_core_tests
+        src/input-api-core.c
+        tests/input-api-core-test.c
+    )
+    target_include_directories(input_api_core_tests PRIVATE src)
+    add_test(NAME input_api_core_tests COMMAND input_api_core_tests)
 endif()
