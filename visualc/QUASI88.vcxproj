@@ -26,6 +26,9 @@
     <ClCompile Include="..\src\fname.c" />
     <ClCompile Include="..\src\getconf.c" />
     <ClCompile Include="..\src\icon.c" />
+    <ClCompile Include="..\src\input-api-protocol.c" />
+    <ClCompile Include="..\src\input-api-core.c" />
+    <ClCompile Include="..\src\input-api.c" />
     <ClCompile Include="..\src\menu.c" />
     <ClCompile Include="..\src\monitor.c" />
     <ClCompile Include="..\src\osdepend\win\file-op.c" />
@@ -212,7 +215,7 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>SDL2\lib\x86\SDL2.lib;SDL2\lib\x86\SDL2main.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>SDL2\lib\x86\SDL2.lib;SDL2\lib\x86\SDL2main.lib;ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <StackReserveSize>2097152</StackReserveSize>
     </Link>
   </ItemDefinitionGroup>
@@ -232,7 +235,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>SDL2\lib\x86\SDL2.lib;SDL2\lib\x86\SDL2main.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>SDL2\lib\x86\SDL2.lib;SDL2\lib\x86\SDL2main.lib;ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <StackReserveSize>2097152</StackReserveSize>
     </Link>
   </ItemDefinitionGroup>
@@ -248,7 +251,7 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>SDL2\lib\x64\SDL2.lib;SDL2\lib\x64\SDL2main.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>SDL2\lib\x64\SDL2.lib;SDL2\lib\x64\SDL2main.lib;ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <StackReserveSize>2097152</StackReserveSize>
     </Link>
   </ItemDefinitionGroup>
@@ -268,7 +271,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>SDL2\lib\x64\SDL2.lib;SDL2\lib\x64\SDL2main.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>SDL2\lib\x64\SDL2.lib;SDL2\lib\x64\SDL2main.lib;ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <StackReserveSize>2097152</StackReserveSize>
     </Link>
   </ItemDefinitionGroup>

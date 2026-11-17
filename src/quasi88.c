@@ -48,6 +48,9 @@
 
 #include "alarm.h"
 #include "q8tk.h"
+#include "input-api.h"
+
+#include <SDL.h>
 
 
 int verbose_level   = DEFAULT_VERBOSE;		/* 冗長レベル */
@@ -63,6 +66,21 @@ int verbose_snd     = FALSE;				/* サウンドのメッセージ */
 static int stateload_or_skip_at_startup(void);
 static void quasi88_stop_core(void);
 static void status_message_at_startup(void);
+static input_api_t input_api;
+static int input_api_active;
+
+static void input_api_key_sink(int key88, int pressed, void *opaque)
+{
+	(void)opaque;
+	quasi88_key(key88, pressed);
+}
+
+void quasi88_input_api_release_all(void)
+{
+	if (input_api_active) {
+		input_api_release_all(&input_api);
+	}
+}
 
 #define VERBOSE_PROC_PRINTF(str)	if (verbose_proc) printf(str); fflush(NULL)
 #define ERROR_PRINTF(str)			fprintf(stderr, str)
@@ -130,6 +148,15 @@ void quasi88_start(void)
 						pc88sub_init((resume_flag) ? INIT_STATELOAD : INIT_POWERON);
 
 						key_record_playback_init();			/* キー入力記録/再生 初期化 */
+						if (input_api_port != 0) {
+							if (!input_api_init(&input_api, (uint16_t)input_api_port,
+											keyboard_str2key88, input_api_key_sink, NULL)) {
+								fprintf(stderr, "input API failed to listen on 127.0.0.1:%d\n",
+										input_api_port);
+								quasi88_exit(-1);
+							}
+							input_api_active = TRUE;
+						}
 						screen_snapshot_init();				/* スナップショット関連初期化 */
 
 						debuglog_init();
@@ -202,6 +229,10 @@ static void quasi88_stop_core(void)
 						profiler_exit();
 						debuglog_exit();
 						screen_snapshot_exit();
+						if (input_api_active) {
+							input_api_shutdown(&input_api);
+							input_api_active = FALSE;
+						}
 						key_record_playback_exit();
 						pc88main_term();
 						pc88sub_term();
@@ -390,6 +421,9 @@ int quasi88_loop(void)
 	/* イベント処理 */
 	profiler_lapse(PROF_LAPSE_EVENT);
 	event_update();
+	if (input_api_active) {
+		input_api_poll(&input_api, (uint64_t)SDL_GetTicks64());
+	}
 
 	/* UI処理 */
 	profiler_lapse(PROF_LAPSE_UI);

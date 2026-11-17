@@ -1,6 +1,8 @@
 cmake_minimum_required(VERSION 3.20)
 project(QUASI88 VERSION 0.7.4 LANGUAGES C CXX)
 
+include(CTest)
+
 if(APPLE)
     set(CMAKE_OSX_DEPLOYMENT_TARGET "13.0" CACHE STRING "Minimum macOS deployment target" FORCE)
     set(CMAKE_OSX_ARCHITECTURES "arm64;x86_64" CACHE STRING "" FORCE)
@@ -77,6 +79,9 @@ set(SOURCES
     ${SRCDIR}/fname.c
     ${SRCDIR}/getconf.c
     ${SRCDIR}/icon.c
+	${SRCDIR}/input-api-protocol.c
+	${SRCDIR}/input-api-core.c
+	${SRCDIR}/input-api.c
     ${SRCDIR}/menu.c
     ${SRCDIR}/monitor.c
     ${SRCDIR}/pause.c
@@ -283,7 +288,7 @@ endif()
 if(APPLE)
     target_link_libraries(QUASI88 PRIVATE SDL2::SDL2 "-framework Cocoa" "-framework CoreVideo" "-framework IOKit" "-framework CoreFoundation")
 elseif(WIN32)
-    target_link_libraries(QUASI88 PRIVATE SDL2::SDL2 SDL2::SDL2main)
+    target_link_libraries(QUASI88 PRIVATE SDL2::SDL2 SDL2::SDL2main ws2_32)
 else()
     target_link_libraries(QUASI88 PRIVATE SDL2::SDL2)
 endif()
@@ -320,3 +325,43 @@ else()
 endif()
 
 include(CPack)
+
+if(BUILD_TESTING)
+    add_executable(input_api_protocol_tests
+        src/input-api-protocol.c
+        tests/input-api-protocol-test.c
+    )
+    target_include_directories(input_api_protocol_tests PRIVATE src)
+    add_test(NAME input_api_protocol_tests COMMAND input_api_protocol_tests)
+
+    add_executable(input_api_core_tests
+        src/input-api-core.c
+        tests/input-api-core-test.c
+    )
+    target_include_directories(input_api_core_tests PRIVATE src)
+    add_test(NAME input_api_core_tests COMMAND input_api_core_tests)
+
+    add_executable(input_api_server_tests
+        src/input-api-protocol.c
+        src/input-api-core.c
+        src/input-api.c
+        tests/input-api-server-test.c
+    )
+    target_include_directories(input_api_server_tests PRIVATE src)
+    if(WIN32)
+        target_link_libraries(input_api_server_tests PRIVATE ws2_32)
+    endif()
+    add_test(NAME input_api_server_tests COMMAND input_api_server_tests)
+
+    add_executable(input_api_lifecycle_tests
+        src/input-api-protocol.c
+        src/input-api-core.c
+        src/input-api.c
+        tests/input-api-lifecycle-test.c
+    )
+    target_include_directories(input_api_lifecycle_tests PRIVATE src)
+    if(WIN32)
+        target_link_libraries(input_api_lifecycle_tests PRIVATE ws2_32)
+    endif()
+    add_test(NAME input_api_lifecycle_tests COMMAND input_api_lifecycle_tests)
+endif()

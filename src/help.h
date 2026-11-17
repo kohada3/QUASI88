@@ -127,6 +127,7 @@ static void help_msg_common(FILE *fp)
 		"    -serialin <filename>    Set serial input from file\n"
 		"    -record <filename>      Record all key inputs to the file <filename>\n"
 		"    -playback <filename>    Play back all key inputs from the file <filename>\n"
+		"    -input-api <port>       Enable input API on 127.0.0.1 only [disabled]\n"
 		"    -timestop               Freeze real-time-clock\n"
 		"    -vsync <hz>             Set VSYNC frequency [55.4]\n"
 #ifdef USE_MONITOR

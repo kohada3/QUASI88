@@ -66,6 +66,8 @@ void quasi88_reset(const T_RESET_CFG *cfg)
 	int sb_changed = FALSE;
 	int empty[2];
 
+	quasi88_input_api_release_all();
+
 	if (verbose_proc) {
 		printf("Reset QUASI88...start\n");
 	}
