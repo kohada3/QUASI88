@@ -11,6 +11,8 @@
 
 typedef int (*input_api_key_resolver_t)(const char *name);
 
+extern int input_api_port;
+
 typedef struct {
     intptr_t listener;
     intptr_t client;

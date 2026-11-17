@@ -25,6 +25,8 @@ typedef socklen_t native_socket_length_t;
 #define CLOSE_SOCKET close
 #endif
 
+int input_api_port = 0;
+
 static native_socket_t native_socket(intptr_t value)
 {
     return (native_socket_t)(uintptr_t)value;

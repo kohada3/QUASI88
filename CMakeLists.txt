@@ -79,6 +79,9 @@ set(SOURCES
     ${SRCDIR}/fname.c
     ${SRCDIR}/getconf.c
     ${SRCDIR}/icon.c
+	${SRCDIR}/input-api-protocol.c
+	${SRCDIR}/input-api-core.c
+	${SRCDIR}/input-api.c
     ${SRCDIR}/menu.c
     ${SRCDIR}/monitor.c
     ${SRCDIR}/pause.c
@@ -285,7 +288,7 @@ endif()
 if(APPLE)
     target_link_libraries(QUASI88 PRIVATE SDL2::SDL2 "-framework Cocoa" "-framework CoreVideo" "-framework IOKit" "-framework CoreFoundation")
 elseif(WIN32)
-    target_link_libraries(QUASI88 PRIVATE SDL2::SDL2 SDL2::SDL2main)
+    target_link_libraries(QUASI88 PRIVATE SDL2::SDL2 SDL2::SDL2main ws2_32)
 else()
     target_link_libraries(QUASI88 PRIVATE SDL2::SDL2)
 endif()
@@ -349,4 +352,16 @@ if(BUILD_TESTING)
         target_link_libraries(input_api_server_tests PRIVATE ws2_32)
     endif()
     add_test(NAME input_api_server_tests COMMAND input_api_server_tests)
+
+    add_executable(input_api_lifecycle_tests
+        src/input-api-protocol.c
+        src/input-api-core.c
+        src/input-api.c
+        tests/input-api-lifecycle-test.c
+    )
+    target_include_directories(input_api_lifecycle_tests PRIVATE src)
+    if(WIN32)
+        target_link_libraries(input_api_lifecycle_tests PRIVATE ws2_32)
+    endif()
+    add_test(NAME input_api_lifecycle_tests COMMAND input_api_lifecycle_tests)
 endif()

@@ -38,6 +38,7 @@
 #include "wait.h"
 #include "snapshot.h"
 #include "suspend.h"
+#include "input-api.h"
 
 
 /*----------------------------------------------------------------------*/
@@ -753,6 +754,7 @@ static const T_CONFIG_TABLE option_table[] = {
 	{ 264, "no_cmd_sing",	X_FIX,	&use_cmdsing,		FALSE,			0,				0,				0			},
 	{ 265, "statistics",	X_FIX,	&show_statistics,	TRUE,			0,				0,				0			},
 	{ 265, "nostatistics",	X_FIX,	&show_statistics,	FALSE,			0,				0,				0			},
+	{ 266, "input-api",		X_INT,	&input_api_port,		1,				65535,			0,				0			},
 
 #ifdef	USE_MONITOR
 	{ 271, "debug",			X_FIX,	&debug_mode,		TRUE,			0,				0,				0			},
@@ -1017,10 +1019,16 @@ static int check_option(char *opt1, char *opt2, int priority,
 				} else {
 					fprintf(fp_stderr(),
 							"error: invalid value %s %s\n", opt1, opt2);
+					if (op->var == &input_api_port) {
+						ret_val = -1;
+					}
 				}
 			}
 		} else {
 			fprintf(fp_stderr(), "error: %s requires an argument\n", opt1);
+			if (op->var == &input_api_port) {
+				ret_val = -1;
+			}
 		}
 	}
 	break;
