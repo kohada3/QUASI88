@@ -1,6 +1,8 @@
 cmake_minimum_required(VERSION 3.20)
 project(QUASI88 VERSION 0.7.4 LANGUAGES C CXX)
 
+include(CTest)
+
 if(APPLE)
     set(CMAKE_OSX_DEPLOYMENT_TARGET "13.0" CACHE STRING "Minimum macOS deployment target" FORCE)
     set(CMAKE_OSX_ARCHITECTURES "arm64;x86_64" CACHE STRING "" FORCE)
@@ -320,3 +322,12 @@ else()
 endif()
 
 include(CPack)
+
+if(BUILD_TESTING)
+    add_executable(input_api_protocol_tests
+        src/input-api-protocol.c
+        tests/input-api-protocol-test.c
+    )
+    target_include_directories(input_api_protocol_tests PRIVATE src)
+    add_test(NAME input_api_protocol_tests COMMAND input_api_protocol_tests)
+endif()
